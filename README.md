@@ -260,14 +260,220 @@ cat 2
 
 dog 2
 
-🏁 END
 
-👉 This file contains complete Hadoop lab exam preparation:
 
-Commands
 
-Code
+Hadoop MapReduce Java Quick Reference
+1. Basic Java Syntax
+   Variable
+   int age = 22;
+   String name = "Maria";
+   Object Creation
+   ClassName objectName = new ClassName();
 
-Theory
+Example:
 
-Execution flow
+Text word = new Text();
+
+IntWritable one = new IntWritable(1);
+
+Method
+public void hello() {
+System.out.println("Hello");
+}
+If-Else
+if (x > 10) {
+System.out.println("Big");
+} else {
+System.out.println("Small");
+}
+For Loop
+for (int i = 0; i < 5; i++) {
+System.out.println(i);
+}
+For-Each Loop
+for (IntWritable val : values) {
+sum += val.get();
+}
+While Loop
+while (itr.hasMoreTokens()) {
+word.set(itr.nextToken());
+}
+2. Hadoop Data Types
+   Java Type	Hadoop Type
+   String	Text
+   int	IntWritable
+   long	LongWritable
+   float	FloatWritable
+   double	DoubleWritable
+
+Example:
+
+Text word = new Text("Hello");
+IntWritable count = new IntWritable(1);
+3. Hadoop Mapper Syntax
+   Template
+   public static class MyMapper extends Mapper<InputKey, InputValue, OutputKey, OutputValue> {
+   }
+   WordCount Example
+   extends Mapper<Object, Text, Text, IntWritable>
+   Meaning
+   Type	Purpose
+   Object	Input Key
+   Text	Input Line
+   Text	Output Word
+   IntWritable	Output Count
+4. Mapper Method
+   Template
+   public void map(Object key, Text value, Context context)
+   Parameters
+   Parameter	Description
+   key	Input line offset
+   value	Actual input line
+   context	Writes Mapper output
+   Example
+
+Input:
+
+Hello Hadoop
+
+Mapper Output:
+
+context.write(new Text("Hello"), new IntWritable(1));
+context.write(new Text("Hadoop"), new IntWritable(1));
+5. context.write()
+   Template
+   context.write(key, value);
+   Example
+   context.write(word, one);
+
+Output:
+
+Hello -> 1
+6. Hadoop Reducer Syntax
+   Template
+   public static class MyReducer extends Reducer<InputKey, InputValue, OutputKey, OutputValue> {
+   }
+   WordCount Example
+   extends Reducer<Text, IntWritable, Text, IntWritable>
+7. Reducer Method
+   Template
+   public void reduce(Text key, Iterable<IntWritable> values, Context context)
+   Example
+
+Input:
+
+Hello -> [1,1,1]
+
+Reducer Logic:
+
+int sum = 0;
+
+for (IntWritable val : values) {
+sum += val.get();
+}
+
+Output:
+
+Hello -> 3
+8. StringTokenizer
+
+Used to split a sentence into words.
+
+StringTokenizer itr = new StringTokenizer(value.toString());
+
+Input:
+
+Hello Hadoop World
+
+Output:
+
+Hello
+Hadoop
+World
+9. Hadoop Job Configuration
+   Configuration conf = new Configuration();
+
+Job job = Job.getInstance(conf, "word count");
+
+Creates a new MapReduce job.
+
+10. Set Mapper
+    job.setMapperClass(TokenizerMapper.class);
+11. Set Reducer
+    job.setReducerClass(IntSumReducer.class);
+12. Combiner
+    job.setCombinerClass(IntSumReducer.class);
+
+Benefits:
+
+Optional optimization
+Reduces network traffic
+Performs local aggregation
+13. Output Types
+    job.setOutputKeyClass(Text.class);
+    job.setOutputValueClass(IntWritable.class);
+14. Input Path
+    FileInputFormat.addInputPath(job, new Path(args[0]));
+
+Example:
+
+hadoop jar wc.jar WordCount /input/input.txt /output
+args[0] = /input/input.txt
+15. Output Path
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+    args[1] = /output
+16. Run Job
+    job.waitForCompletion(true);
+
+Waits until the MapReduce job finishes.
+
+Exam Shortcuts
+Sum
+int sum = 0;
+
+for (IntWritable v : values) {
+sum += v.get();
+}
+Maximum
+int max = Integer.MIN_VALUE;
+
+for (IntWritable v : values) {
+max = Math.max(max, v.get());
+}
+Minimum
+int min = Integer.MAX_VALUE;
+
+for (IntWritable v : values) {
+min = Math.min(min, v.get());
+}
+Average
+sum += v.get();
+count++;
+
+avg = sum / count;
+MapReduce Workflow
+Input Data
+|
+v
+Mapper
+|
+v
+Shuffle & Sort
+|
+v
+Reducer
+|
+v
+Output
+Common Hadoop Exam Topics
+Word Count
+Character Count
+Maximum Value
+Minimum Value
+Average Calculation
+Top N Records
+HDFS Commands
+NameNode and DataNode
+YARN Architecture
+MapReduce Workflow
